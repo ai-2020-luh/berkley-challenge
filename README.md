@@ -1,2 +1,1 @@
-# berkley-challenge
-Homework Project
+# ai-2020-project-1
