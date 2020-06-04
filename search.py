@@ -100,24 +100,24 @@ def depthFirstSearch(problem: SearchProblem):
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
-    frontier = util.Queue()
-    frontier.push(problem.getStartState())
-    visited = []
+    frontier = util.Queue()                     # frontier is a FIFO Queue
+    frontier.push(problem.getStartState())      # add startState to frontier
+    visited = []                                # list of states already visited (avoid loops)
     tempPath = []
-    path = []
-    pathToCurrent = util.Queue();
-    currState = frontier.pop()
+    path = []                                   # path to the goal (is returned)
+    pathToCurrent = util.Queue();               # paths to the states in the frontier
+    currState = frontier.pop()                  # current state is the first entry in frontier
 
-    while not problem.isGoalState(currState):
-        if currState not in visited:
-            visited.append(currState)
+    while not problem.isGoalState(currState):                   # check whether current state is goal state
+        if currState not in visited:                            # skip visited states
+            visited.append(currState)                           # add current state to visted list
             successors = problem.getSuccessors(currState)
             for (child, direction, cost) in successors:
-                frontier.push(child)
+                frontier.push(child)                            # add the successors of the current state to frontier
                 tempPath = path + [direction]
-                pathToCurrent.push(tempPath)
-        currState =frontier.pop()
-        path = pathToCurrent.pop()
+                pathToCurrent.push(tempPath)                    # add the paths to the children of the current state to the pathQueue
+        currState = frontier.pop()                              # set the next frontier entry as current state
+        path = pathToCurrent.pop()                              # set the path to the current State as path
 
     return path
 
