@@ -111,11 +111,13 @@ def breadthFirstSearch(problem: SearchProblem):
     while not problem.isGoalState(currState):                   # check whether current state is goal state
         if currState not in visited:                            # skip visited states
             visited.append(currState)                           # add current state to visted list
+
             successors = problem.getSuccessors(currState)
             for (child, direction, cost) in successors:
                 frontier.push(child)                            # add the successors of the current state to frontier
                 tempPath = path + [direction]
                 pathToCurrent.push(tempPath)                    # add the paths to the children of the current state to the pathQueue
+
         currState = frontier.pop()                              # set the next frontier entry as current state
         path = pathToCurrent.pop()                              # set the path to the current State as path
 
@@ -124,8 +126,31 @@ def breadthFirstSearch(problem: SearchProblem):
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    frontier = util.PriorityQueue()               # frontier is a Priority Queue (if every cost = 1, then FIFO)
+    frontier.push(problem.getStartState(),0)    # add startState and its cost (0) to frontier
+    visited = []                                # list of states already visited (avoid loops)
+    tempPath = []
+    path = []                                   # path to the goal (is returned)
+    pathToCurrent = util.PriorityQueue()               # paths to the states in the frontier
+    currState = frontier.pop()                  # current state is the first entry in frontier
+
+    while not problem.isGoalState(currState):               # check whether current state is goal state
+        if currState not in visited:                        # skip visited states
+            visited.append(currState)                       # add current state to visted list
+
+            successors = problem.getSuccessors(currState)
+            for (child, direction, cost) in successors:     # iterate through all children
+                tempPath = path + [direction]
+                childCost = problem.getCostOfActions(tempPath)  # get cost to move to child
+                if child not in visited:                    # skip visited children
+                    frontier.push(child, childCost)         # add child and cost to frontier
+                    pathToCurrent.push(tempPath, childCost)  # add path and cost to child to frontier
+
+        currState = frontier.pop()                          # set the next frontier entry as current state
+        path = pathToCurrent.pop()                          # set the path to the current State as path
+
+    return path
+
 
 def nullHeuristic(state, problem=None):
     """
