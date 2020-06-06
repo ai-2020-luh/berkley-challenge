@@ -22,8 +22,8 @@ def astar1(start):
             q.push((
                 pathcost + cost,
                 pathcost + cost + h(child),
-                path + [node],
-                node
+                path + [child],
+                child
             ))
 
     return None
