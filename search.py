@@ -19,6 +19,7 @@ Pacman agents (in searchAgents.py).
 
 import util
 
+
 class SearchProblem:
     """
     This class outlines the structure of a search problem, but doesn't implement
@@ -70,10 +71,10 @@ def tinyMazeSearch(problem):
     from game import Directions
     s = Directions.SOUTH
     w = Directions.WEST
-    return  [s, s, w, s, w, w, s, w]
+    return [s, s, w, s, w, w, s, w]
+
 
 def depthFirstSearch(problem: SearchProblem):
-
     def dfs(state: {int, int}, visited: [{int, int}] = []):
         if problem.isGoalState(state):
             return []
@@ -95,59 +96,59 @@ def depthFirstSearch(problem: SearchProblem):
         return None
 
     result = dfs(problem.getStartState())
-    print(result)
     return result
+
 
 def breadthFirstSearch(problem: SearchProblem):
     """Search the shallowest nodes in the search tree first."""
-    frontier = util.Queue()                     # frontier is a FIFO Queue
-    frontier.push(problem.getStartState())      # add startState to frontier
-    visited = []                                # list of states already visited (avoid loops)
+    frontier = util.Queue()  # frontier is a FIFO Queue
+    frontier.push(problem.getStartState())  # add startState to frontier
+    visited = []  # list of states already visited (avoid loops)
     tempPath = []
-    path = []                                   # path to the goal (is returned)
-    pathToCurrent = util.Queue();               # paths to the states in the frontier
-    currState = frontier.pop()                  # current state is the first entry in frontier
+    path = []  # path to the goal (is returned)
+    pathToCurrent = util.Queue();  # paths to the states in the frontier
+    currState = frontier.pop()  # current state is the first entry in frontier
 
-    while not problem.isGoalState(currState):                   # check whether current state is goal state
-        if currState not in visited:                            # skip visited states
-            visited.append(currState)                           # add current state to visted list
+    while not problem.isGoalState(currState):  # check whether current state is goal state
+        if currState not in visited:  # skip visited states
+            visited.append(currState)  # add current state to visted list
 
             successors = problem.getSuccessors(currState)
             for (child, direction, cost) in successors:
-                frontier.push(child)                            # add the successors of the current state to frontier
+                frontier.push(child)  # add the successors of the current state to frontier
                 tempPath = path + [direction]
-                pathToCurrent.push(tempPath)                    # add the paths to the children of the current state to the pathQueue
+                pathToCurrent.push(tempPath)  # add the paths to the children of the current state to the pathQueue
 
-        currState = frontier.pop()                              # set the next frontier entry as current state
-        path = pathToCurrent.pop()                              # set the path to the current State as path
+        currState = frontier.pop()  # set the next frontier entry as current state
+        path = pathToCurrent.pop()  # set the path to the current State as path
 
     return path
 
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    frontier = util.PriorityQueue()               # frontier is a Priority Queue (if every cost = 1, then FIFO)
-    frontier.push(problem.getStartState(),0)    # add startState and its cost (0) to frontier
-    visited = []                                # list of states already visited (avoid loops)
+    frontier = util.PriorityQueue()  # frontier is a Priority Queue (if every cost = 1, then FIFO)
+    frontier.push(problem.getStartState(), 0)  # add startState and its cost (0) to frontier
+    visited = []  # list of states already visited (avoid loops)
     tempPath = []
-    path = []                                   # path to the goal (is returned)
-    pathToCurrent = util.PriorityQueue()               # paths to the states in the frontier
-    currState = frontier.pop()                  # current state is the first entry in frontier
+    path = []  # path to the goal (is returned)
+    pathToCurrent = util.PriorityQueue()  # paths to the states in the frontier
+    currState = frontier.pop()  # current state is the first entry in frontier
 
-    while not problem.isGoalState(currState):               # check whether current state is goal state
-        if currState not in visited:                        # skip visited states
-            visited.append(currState)                       # add current state to visted list
+    while not problem.isGoalState(currState):  # check whether current state is goal state
+        if currState not in visited:  # skip visited states
+            visited.append(currState)  # add current state to visted list
 
             successors = problem.getSuccessors(currState)
-            for (child, direction, cost) in successors:     # iterate through all children
+            for (child, direction, cost) in successors:  # iterate through all children
                 tempPath = path + [direction]
                 childCost = problem.getCostOfActions(tempPath)  # get cost to move to child
-                if child not in visited:                    # skip visited children
-                    frontier.push(child, childCost)         # add child and cost to frontier
+                if child not in visited:  # skip visited children
+                    frontier.push(child, childCost)  # add child and cost to frontier
                     pathToCurrent.push(tempPath, childCost)  # add path and cost to child to frontier
 
-        currState = frontier.pop()                          # set the next frontier entry as current state
-        path = pathToCurrent.pop()                          # set the path to the current State as path
+        currState = frontier.pop()  # set the next frontier entry as current state
+        path = pathToCurrent.pop()  # set the path to the current State as path
 
     return path
 
@@ -159,10 +160,54 @@ def nullHeuristic(state, problem=None):
     """
     return 0
 
-def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+# Utility class to help structure the A* algorithm
+class Checkpoint:
+    def __init__(self, cost, path, node):
+        self.cost = cost
+        self.path = path
+        self.node = node
+
+
+def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
+    # utility method
+    def h(node):
+        return heuristic(node, problem)
+
+    visited = set()
+    queue = util.KeyedPriorityQueue()
+    queue.push(
+        item=Checkpoint(0, [], problem.getStartState()),
+        priority=0 + h(problem.getStartState())
+    )
+
+    while not queue.isEmpty():
+        current: Checkpoint = queue.pop()
+
+        # if this is the goal node, we can just stop and return the path
+        if problem.isGoalState(current.node):
+            return current.path
+
+        # we can mark the current node as visited already. There can't be a smaller path from the current to the current
+        # since negative weights are not allowed
+        visited.add(current.node)
+
+        # Iterate over every child node of current node, that we have not visited already
+        for (child, direction, cost) in problem.getSuccessors(current.node):
+            if child in visited:
+                continue
+
+            costToChild = current.cost + cost
+            pathToChild = current.path + [direction]
+
+            queue.update(
+                item=Checkpoint(costToChild, pathToChild, child),
+                key=lambda i: i.node,
+                priority=costToChild + h(child)
+            )
+
+    # No path from start to goal exists
+    return None
 
 
 # Abbreviations
