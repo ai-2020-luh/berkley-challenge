@@ -168,6 +168,8 @@ class Checkpoint:
         self.path = path
         self.node = node
 
+    def __eq__(self, other):
+        return self.node == other.node
 
 def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     # utility method
@@ -175,7 +177,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
         return heuristic(node, problem)
 
     visited = set()
-    queue = util.KeyedPriorityQueue()
+    queue = util.PriorityQueue()
     queue.push(
         item=Checkpoint(0, [], problem.getStartState()),
         priority=0 + h(problem.getStartState())
@@ -202,7 +204,6 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
 
             queue.update(
                 item=Checkpoint(costToChild, pathToChild, child),
-                key=lambda i: i.node,
                 priority=costToChild + h(child)
             )
 
