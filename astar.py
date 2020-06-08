@@ -1,8 +1,9 @@
+from math import sqrt
 goal = (6, 5)
 def h(n):
     a,b = n
     x, y = goal
-    return √( (a-x)^2 + (b-y)^2)
+    return sqrt( (a-x)**2 + (b-y)**2)
 
 def astar1(start):
     visited = {} # Map node => cost)
