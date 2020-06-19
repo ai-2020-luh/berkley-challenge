@@ -375,72 +375,16 @@ class CornersProblem(search.SearchProblem):
 
 # TODO (relevant for grading) describe heuristic
 def cornersHeuristic(state, problem):
-    """
-    A heuristic for the CornersProblem that you defined.
-
-      state:   The current search state
-               (a data structure you chose in your search problem)
-
-      problem: The CornersProblem instance for this layout.
-
-    This function should always return a number that is a lower bound on the
-    shortest path from the state to a goal of the problem; i.e.  it should be
-    admissible (as well as consistent).
-    """
     corners = problem.corners  # These are the corner coordinates
-    walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
+    # walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
 
-    # manhatten distance
-    def dis(a, b):
+    def manhatten_distance(a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
-    def manhatted_path(a, b):
-        (ax, ay) = a
-        (bx, by) = b
-        dx = abs(ax - bx)
-        dy = abs(ay - by)
-        step1 = max(dx, dy)
-        step2 = min(dx, dy)
-        def sign(a):
-            if a == 0:
-                return 0
-            if a < 0:
-                return -1
-            return 1
-        incx = sign(ax - bx)
-        incy = sign(ay - by)
-        list = []
-        if dx > dy:
-            while step1 > 0:
-                step1-=1
-                ax += incx
-                list.append((ax, ay))
-            while step2 > 0:
-                step2-=1
-                ay += incy
-                list.append((ax, ay))
-        else:
-            while step1 > 0:
-                step1-=1
-                ay += incy
-                list.append((ax, ay))
-            while step2 > 0:
-                step2-=1
-                ax += incx
-                list.append((ax, ay))
-        return list
-
     pos = state[0]
-    # distance = sorted([dis(pos, corner) for corner in corners])[0]
-    list = []
-    for corner in corners:
-        d = dis(pos, corner)
-        if not any([walls.data[p[0]][p[1]] for p in manhatted_path(pos, corner)]):
-            d+=1
-        list.append(d)
+    distance = sorted([manhatten_distance(pos, corner) for corner in corners])[0]
 
-    return sorted(list)[0]
-
+    return distance
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
