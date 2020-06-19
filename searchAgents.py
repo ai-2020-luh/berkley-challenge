@@ -372,7 +372,6 @@ class CornersProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
         return len(actions)
 
-
 # TODO (relevant for grading) describe heuristic
 def cornersHeuristic(state, problem):
     corners = problem.corners  # These are the corner coordinates
