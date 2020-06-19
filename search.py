@@ -176,7 +176,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
     def h(node):
         return heuristic(node, problem)
 
-    visited = set()
+    visited = list()
     queue = util.PriorityQueue()
     queue.push(
         item=Checkpoint(0, [], problem.getStartState()),
@@ -192,7 +192,7 @@ def aStarSearch(problem: SearchProblem, heuristic=nullHeuristic):
 
         # we can mark the current node as visited already. There can't be a smaller path from the current to the current
         # since negative weights are not allowed
-        visited.add(current.node)
+        visited.append(current.node)
 
         # Iterate over every child node of current node, that we have not visited already
         for (child, direction, cost) in problem.getSuccessors(current.node):
