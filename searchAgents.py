@@ -380,8 +380,6 @@ def cornersHeuristic(state, problem):
         if state[1][i] == 0:
             corners.append(problem.corners[i])
 
-    # walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
-
     def manhatten_distance(a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
