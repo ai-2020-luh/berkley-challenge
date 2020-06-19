@@ -377,8 +377,8 @@ class CornersProblem(search.SearchProblem):
 def cornersHeuristic(state, problem):
     corners = []
     for i in [0, 1, 2, 3]:
-       if state[1][i] == 0:
-           corners.append(problem.corners[i])
+        if state[1][i] == 0:
+            corners.append(problem.corners[i])
 
     # walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
 
