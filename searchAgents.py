@@ -372,18 +372,25 @@ class CornersProblem(search.SearchProblem):
             if self.walls[x][y]: return 999999
         return len(actions)
 
-# TODO (relevant for grading) describe heuristic
+# filters unvisited corners from problem
+# and returns pathlength to corner with smallest manhatten distance
 def cornersHeuristic(state, problem):
-    corners = problem.corners  # These are the corner coordinates
+    corners = []
+    for i in [0, 1, 2, 3]:
+       if state[1][i] == 0:
+           corners.append(problem.corners[i])
+
     # walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
 
     def manhatten_distance(a, b):
         return abs(a[0] - b[0]) + abs(a[1] - b[1])
 
     pos = state[0]
-    distance = sorted([manhatten_distance(pos, corner) for corner in corners])[0]
+    distances = sorted([manhatten_distance(pos, corner) for corner in corners])
+    if len(distances) == 0:
+        return 0
 
-    return distance
+    return distances[0]
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
