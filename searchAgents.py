@@ -447,44 +447,35 @@ class AStarFoodSearchAgent(SearchAgent):
 
 def foodHeuristic(state, problem):
     """
-    Your heuristic for the FoodSearchProblem goes here.
+    using the given function mazeDistance to create the heuristic.
 
-    This heuristic must be consistent to ensure correctness.  First, try to come
-    up with an admissible heuristic; almost all admissible heuristics will be
-    consistent as well.
-
-    If using A* ever finds a solution that is worse uniform cost search finds,
-    your heuristic is *not* consistent, and probably not admissible!  On the
-    other hand, inadmissible or inconsistent heuristics may find optimal
-    solutions, so be careful.
-
-    The state is a tuple ( pacmanPosition, foodGrid ) where foodGrid is a Grid
-    (see game.py) of either True or False. You can call foodGrid.asList() to get
-    a list of food coordinates instead.
-
-    If you want access to info like walls, capsules, etc., you can query the
-    problem.  For example, problem.walls gives you a Grid of where the walls
-    are.
-
-    If you want to *store* information to be reused in other calls to the
-    heuristic, there is a dictionary called problem.heuristicInfo that you can
-    use. For example, if you only want to count the walls once and store that
-    value, try: problem.heuristicInfo['wallCount'] = problem.walls.count()
-    Subsequent calls to this heuristic can access
-    problem.heuristicInfo['wallCount']
+    the mazeDistance function takes two positions (pacman's as 'position' and the position of the food) and the
+    gameState to calculate the shortest path through the maze using the implemented bfs search.
     """
     position, foodGrid = state
     "*** YOUR CODE HERE ***"
 
     foodposition = foodGrid.asList()
 
-    from util import manhattanDistance
-    heuristic = [0]
-    for pos in foodposition:
-        heuristic.append( manhattanDistance(position,pos))
-    return max(heuristic)
+    foodcost = [0]*len(foodposition)
 
-    return 0
+    if len(foodposition)==0:
+        return 0
+
+    for i in range(len(foodposition)):
+        foodcost[i]=mazeDistance(position,foodposition[i], problem.startingGameState)
+
+    return max(foodcost)
+
+
+
+    # Manhattan Distance (3/4 in autograder)
+    # from util import manhattanDistance
+    # heuristic = [0]
+    # for pos in foodposition:
+    #    heuristic.append( manhattanDistance(position,pos))
+    # return max(heuristic)
+
 
 class ClosestDotSearchAgent(SearchAgent):
     "Search for all food using a sequence of searches"
