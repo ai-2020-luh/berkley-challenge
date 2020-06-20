@@ -375,20 +375,25 @@ class CornersProblem(search.SearchProblem):
 # filters unvisited corners from problem
 # and returns pathlength to corner with smallest manhatten distance
 def cornersHeuristic(state, problem):
+    # utility function to calculate manhatten distance
+    def manhatten_distance(a, b):
+        return abs(a[0] - b[0]) + abs(a[1] - b[1])
+
+    # Filter out all invisited corners
     corners = []
     for i in [0, 1, 2, 3]:
         if state[1][i] == 0:
             corners.append(problem.corners[i])
 
-    def manhatten_distance(a, b):
-        return abs(a[0] - b[0]) + abs(a[1] - b[1])
-
     pos = state[0]
-    distances = sorted([manhatten_distance(pos, corner) for corner in corners])
+    # list of (manhatten) distances to all points from the current position
+    distances = [manhatten_distance(pos, corner) for corner in corners]
+
     if len(distances) == 0:
         return 0
 
-    return distances[0]
+    # return the longest distance
+    return max(distances)
 
 class AStarCornersAgent(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
