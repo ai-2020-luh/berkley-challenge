@@ -458,15 +458,14 @@ class AStarFoodSearchAgent(SearchAgent):
         self.searchType = FoodSearchProblem
 
 
-def foodHeuristic(state, problem):
-    """
-    using the given function mazeDistance to create the heuristic.
+"""
+using the given function mazeDistance to create the heuristic.
 
-    the mazeDistance function takes two positions (pacman's as 'position' and the position of the food) and the
-    gameState to calculate the shortest path through the maze using the implemented bfs search.
-    """
+the mazeDistance function takes two positions (pacman's as 'position' and the position of the food) and the
+gameState to calculate the shortest path through the maze using the implemented bfs search.
+"""
+def foodHeuristic(state, problem):
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
 
     foodposition = foodGrid.asList()
 
